@@ -1,0 +1,13 @@
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\bin\Debug\Go-Game_lorleveque_WinForm.exe.config
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\bin\Debug\Go-Game_lorleveque_WinForm.exe
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\bin\Debug\Go-Game_lorleveque_WinForm.pdb
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go-Game_lorleveque_WinForm.csprojAssemblyReference.cache
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go_Game_lorleveque_WinForm.GoGame.resources
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go_Game_lorleveque_WinForm.Properties.Resources.resources
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go-Game_lorleveque_WinForm.csproj.GenerateResource.cache
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go-Game_lorleveque_WinForm.csproj.CoreCompileInputs.cache
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go-Game_lorleveque_WinForm.exe
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go-Game_lorleveque_WinForm.pdb
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\bin\Debug\Newtonsoft.Json.dll
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\bin\Debug\Newtonsoft.Json.xml
+C:\CS_project\Go-Game_lorleveque_WinForm\Go-Game_lorleveque_WinForm\obj\Debug\Go-Game_lorleveque_WinForm.csproj.CopyComplete
