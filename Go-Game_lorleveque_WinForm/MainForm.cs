@@ -6,6 +6,7 @@
 
 using Go_Game_lorleveque_WinForm.Engine;
 using Go_Game_lorleveque_WinForm.Game;
+using Go_Game_lorleveque_WinForm.Game.Cases;
 using Go_Game_lorleveque_WinForm.GameSettings;
 using Go_Game_lorleveque_WinForm.Utils;
 using System;
@@ -23,7 +24,11 @@ namespace Go_Game_lorleveque_WinForm
         private ImageAjuster imageAjuster;
         private Controller gameController;
         private CaseDico casesDictionnary;
+        private Win winCondition;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public GoGame()
         {
             InitializeComponent();
@@ -32,22 +37,23 @@ namespace Go_Game_lorleveque_WinForm
             imageAjuster = new ImageAjuster();
             casesDictionnary = new CaseDico();
             gameController = new Controller(this, userSettings, casesDictionnary);
+            winCondition = new Win(userSettings);
 
             //gameController.LoadTwoPlayers("Blanc", "Noir");
         }
 
         /// <summary>
-        /// at the load of the app, will generate the goban
+        /// At the load of the app, will generate the panel for the goban and create the cases for the game
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Object which generated the event</param>
+        /// <param name="e">Data linked to the event</param>
         private void GoGame_Load(object sender, EventArgs e)
         {
             Calculator calculator = new Calculator();
             string maxTimeSpan = calculator.getMaxTimeBase(userSettings.MaxTimeForPlayer);
             Panel goban = new Panel();
             goban.Size = new Size(770, 770);
-            goban.Location = new Point(300, 20);
+            goban.Location = new Point(300, 12);
             goban.Name = "Goban";
 
             labelTimer1.Text = maxTimeSpan;
@@ -59,10 +65,15 @@ namespace Go_Game_lorleveque_WinForm
         /// <summary>
         /// Event when a case of the goban is clicked
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Object which generated the event</param>
+        /// <param name="e">Data linked to the event</param>
         private void GoGameCase_Click(object sender, EventArgs e)
         {
+            if (gameController.GameEnded)
+            {
+                MessageBox.Show("La partie a déjà été terminée, utilisez le bouton \"démarrer\" pour démarrer", "Action interdite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             if (!gameController.GameStarted)
             {
                 MessageBox.Show("La partie n'a pas encore démarrée, utilisez le bouton \"démarrer\" pour démarrer", "Action interdite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -76,6 +87,29 @@ namespace Go_Game_lorleveque_WinForm
 
             String[] buttonNameSplitted = ((PictureBox)sender).Name.Split('.');
             Vector2D casePos = new Vector2D(Convert.ToInt32(buttonNameSplitted[0]), Convert.ToInt32(buttonNameSplitted[1]));
+
+
+            // ONLY FOR THE ML CSV DATA
+            //string filename = "C:\\Temp\\data_ml.csv";
+
+            //string textToAppend = "";
+            //for (int indexX = 0; indexX < userSettings.GobanSize; indexX++)
+            //{
+            //    for (int indexY = 0; indexY < userSettings.GobanSize; indexY++)
+            //    {
+            //        if (gameController.GetCase(new Vector2D(indexX, indexY)) == 0)
+            //        {
+            //            textToAppend += "0;";
+            //            continue;
+            //        }
+            //        textToAppend += (gameController.WhoIsPlayingBool() ? gameController.GetCase(new Vector2D(indexX, indexY)) == 1 ? "1" : "-1" : gameController.GetCase(new Vector2D(indexX, indexY)) == 2 ? "1" : "-1") + ";";
+            //    }
+
+            //}
+            //textToAppend += casePos.X + ";" + casePos.Y + "\n";
+            //System.IO.File.AppendAllText(filename, textToAppend);
+
+
 
             if (casesDictionnary.isCaseBlocked(casePos))
             {
@@ -112,10 +146,13 @@ namespace Go_Game_lorleveque_WinForm
 
             casesDictionnary.updateDicoFromRound(gameController.Round);
             gameController.Played();
+
+
+            checkIfBotAndPlay();
         }
 
         /// <summary>
-        /// Reset the goban
+        /// Reset the game (listViewHistory, gameController, players, labels, buttons. dico and goban)
         /// </summary>
         private void resetGoban()
         {
@@ -127,6 +164,7 @@ namespace Go_Game_lorleveque_WinForm
             gameController.Round = 0;
             gameController.GamePaused = false;
             gameController.GameStarted = false;
+            gameController.PlayingNow = true;
             System.Diagnostics.Debug.WriteLine("|- controlleur réinitialisés");
             gameController.StopTimers();
             gameController.LoadTwoPlayers("Blanc", "Noir");
@@ -140,6 +178,9 @@ namespace Go_Game_lorleveque_WinForm
             buttonStart.Enabled = true;
             buttonPause.Text = "Pause";
             System.Diagnostics.Debug.WriteLine("|- Boutons réinitialisés");
+            pictureBoxPlaynowBlack.Visible = true;
+            pictureBoxPlaynowWhite.Visible = false;
+            System.Diagnostics.Debug.WriteLine("|- PictureBoxs réinitialisées");
             casesDictionnary.resetDico();
             System.Diagnostics.Debug.WriteLine("|- Dictionnaire réinitialisé");
             initGoban(panel);               // reset the displaying goban
@@ -147,7 +188,10 @@ namespace Go_Game_lorleveque_WinForm
             System.Diagnostics.Debug.WriteLine("|- Panel initialisé");
         }
 
-
+        /// <summary>
+        /// Will search the panel and remove every child in it
+        /// </summary>
+        /// <returns>return the panel found</returns>
         private Panel searchGobanPanelAndRemoveAllChilds()
         {
             Searching searcher = new Searching();
@@ -165,10 +209,11 @@ namespace Go_Game_lorleveque_WinForm
         /// <summary>
         /// Event for the start of the game
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Object which generated the event</param>
+        /// <param name="e">Data linked to the event</param>
         private void buttonStart_Click(object sender, EventArgs e)
         {
+            bool player2IsABot = false;
             // if no players aare loaded, display a form the ask the two player name
             if (!gameController.PlayersLoaded)
             {
@@ -218,10 +263,10 @@ namespace Go_Game_lorleveque_WinForm
                         playersName[1] = textBoxPlayer1.Text; // play the white
                         prompt.Close();
 
-                        if (checkBoxBot.Checked && playersName[0] == "")
+                        if (checkBoxBot.Checked && playersName[1] == "")
                         {
                             playersNameWrong = true;
-                            if (MessageBox.Show("Les nom du joueur ne peut pas être vide", "Erreur", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Cancel)
+                            if (MessageBox.Show("Le nom du joueur ne peut pas être vide", "Erreur", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Cancel)
                             {
                                 cancel = true;
                             }
@@ -244,6 +289,7 @@ namespace Go_Game_lorleveque_WinForm
                         }
                         else
                         {
+                            if (checkBoxBot.Checked) { player2IsABot = true; }
                             playersNameWrong = false;
                         }
                     };
@@ -255,12 +301,21 @@ namespace Go_Game_lorleveque_WinForm
                     if (cancel) { return; }
                     
                 } while (playersNameWrong);
-                gameController.LoadTwoPlayers(playersName[0], playersName[1]);
+
+                if (player2IsABot)
+                {
+                    gameController.LoadBot();
+                    gameController.LoadOnePlayer(playersName[1]);
+                }
+                else
+                {
+                    gameController.LoadTwoPlayers(playersName[0], playersName[1]);
+                }
             }
 
             buttonSave.Enabled = true;
             gameController.GameStarted = true;
-            gameController.GetActualPlayer().startTimer();
+            gameController.GetActualPlayer().StartTimer();
             ((Button)sender).Enabled = false;
         }
 
@@ -291,6 +346,37 @@ namespace Go_Game_lorleveque_WinForm
                 ((Button)sender).Text = togglePauseButtonText(gameController.GamePaused);
             }            
         }
+
+        private void buttonEnd_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Terminer la partie ?", "Terminer", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+            {
+                GobanFiller gobanFiller = new GobanFiller();
+                List<FillerCase> casesToUpdate = gobanFiller.FillGoban(gameController.GetGoban.AllGoban);
+
+
+                // ((PictureBox)Controls.Find(indexX + "." + indexY, true)[0]).Image = Image.FromFile(imageAjuster.getImageGobanFromPos(indexX, indexY, userSettings.GobanSize) + "_black.png");
+                foreach (FillerCase caseToUpdate in casesToUpdate)
+                {
+                    gameController.SetCaseWithColor(new Vector2D(caseToUpdate.X, caseToUpdate.Y), caseToUpdate.Color);
+                    ((PictureBox)Controls.Find(caseToUpdate.X + "." + caseToUpdate.Y, true)[0]).Image = Image.FromFile(imageAjuster.getImageGobanFromPos(caseToUpdate.X, caseToUpdate.Y, userSettings.GobanSize) + "_" + caseToUpdate.Color + ".png");
+                }
+
+                gameController.GameEnded = true;
+
+                string winner = winCondition.CountCase(gameController.GetGoban.AllGoban);
+                MessageBox.Show(winner, "Gagnant", MessageBoxButtons.OK);
+
+                buttonStart.Enabled = true;
+                buttonSave.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// get the text for the buttonPause if the game is paused or not
+        /// </summary>
+        /// <param name="gamePaused">Game pause status</param>
+        /// <returns>The text for the button</returns>
         private string togglePauseButtonText(bool gamePaused)
         {
             return gamePaused ? "Reprendre" : "Pause";
@@ -441,8 +527,8 @@ namespace Go_Game_lorleveque_WinForm
 
             Label labelGobanSize = new Label() { Left = 50, Top = 23, Text = "Taille du Goban", Width = 100 };
             NumericUpDown inputGobanSize = new NumericUpDown() { Left = 250, Top = 20, Width = 200 };
-            inputGobanSize.Maximum = 38;
-            inputGobanSize.Minimum = 6;
+            inputGobanSize.Maximum = generalSettings.MaxCase;
+            inputGobanSize.Minimum = generalSettings.MinCase;
             inputGobanSize.Value = userSettings.GobanSize;
             inputGobanSize.ValueChanged += (sender, e) => { userSettings.GobanSize = (byte)inputGobanSize.Value; };
             prompt.Controls.Add(labelGobanSize);
@@ -479,6 +565,33 @@ namespace Go_Game_lorleveque_WinForm
             terminated.Click += (sender, e) => { prompt.Close(); };
             prompt.Controls.Add(terminated);
             prompt.ShowDialog();
+        }
+
+        private void checkIfBotAndPlay()
+        {
+            if (gameController.GotBot && !gameController.PlayingNow)
+            {
+                List<List<byte>> gobanClone = new List<List<byte>>();
+                for (int indexX = 0; indexX < userSettings.GobanSize; indexX++)
+                {
+                    gobanClone.Add(new List<byte>());
+                    for (int indexY = 0; indexY < userSettings.GobanSize; indexY++)
+                    {
+                        if (casesDictionnary.isCaseBlocked(new Vector2D(indexX, indexY)))
+                        {
+                            gobanClone[indexX].Add(3);
+                        }
+                        else
+                        {
+                            gobanClone[indexX].Add(gameController.GetCase(new Vector2D(indexX, indexY)));
+                        }
+                    }
+                }
+
+                string result = gameController.GetPlaysFromBot(gobanClone);
+
+                GoGameCase_Click(((PictureBox)Controls.Find(result, true)[0]), new EventArgs());
+            }
         }
 
         private void calculateMaxTimeForPlayer(int hours, int minutes, int seconds)
@@ -568,5 +681,6 @@ namespace Go_Game_lorleveque_WinForm
                 }
             }
         }
+
     }
 }

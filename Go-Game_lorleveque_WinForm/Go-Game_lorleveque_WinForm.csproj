@@ -59,10 +59,13 @@
     <Compile Include="Engine\GobanCalculator.cs" />
     <Compile Include="Game\CaseDico.cs" />
     <Compile Include="Game\Cases\Case.cs" />
+    <Compile Include="Game\Cases\FillerCase.cs" />
+    <Compile Include="Game\Cases\GobanFiller.cs" />
     <Compile Include="Game\Controller.cs" />
     <Compile Include="Game\Goban.cs" />
     <Compile Include="Game\Users\Bot.cs" />
     <Compile Include="Game\Users\Player.cs" />
+    <Compile Include="Game\Win.cs" />
     <Compile Include="JsonGenerator\Generator.cs" />
     <Compile Include="JsonGenerator\HugeJson.cs" />
     <Compile Include="JsonGenerator\Loader.cs" />

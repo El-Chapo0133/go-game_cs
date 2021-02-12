@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Go_Game_lorleveque_WinForm.Utils;
 using System.Drawing;
 using Go_Game_lorleveque_WinForm.Game.Cases;
+using System;
 
 namespace Go_Game_lorleveque_WinForm.Game
 {
@@ -23,17 +24,34 @@ namespace Go_Game_lorleveque_WinForm.Game
         private GoGame mainForm;
         private UserSettings userSettings;
         private Calculator calculator;
-        private Player player1, player2; // player1 plays white, player2 plays black
+        private Player playerWhite, playerBlack; // playerWhite plays white, playerBlack plays black
+        private Bot bot;
         private Goban goban;
         private GobanCalculator gobanCalculator;
         private CaseDico caseDictionnary;
-        private bool playingNow, gameStarted, gamePaused, playersLoaded; // true means black and false means white
+        private bool playingNow; // true means black and false means white
+        public bool gameStarted, gameEnded, gamePaused, playersLoaded;
         private uint round;
 
         public bool GameStarted
         {
             get { return gameStarted; }
-            set { gameStarted = value; }
+            set { gameStarted = value; 
+                if (gameStarted)
+                {
+                    gameEnded = false;
+                }
+            }
+        }
+        public bool GameEnded
+        {
+            get { return gameEnded; }
+            set { gameEnded = value;
+                if (gameEnded)
+                {
+                    gameStarted = false;
+                }
+            }
         }
         public bool GamePaused
         {
@@ -45,17 +63,18 @@ namespace Go_Game_lorleveque_WinForm.Game
             get { return round; }
             set { round = value; }
         }
-        public bool PlayingNow // for the json
+        public bool PlayingNow
         {
             get { return playingNow; }
+            set { playingNow = value; }
         }
         public Player Player1 // for the json
         {
-            get { return player1; }
+            get { return playerWhite; }
         }
         public Player Player2 // for the json
         {
-            get { return player2; }
+            get { return playerBlack; }
         }
         public Goban GetGoban // for the json
         { 
@@ -64,6 +83,10 @@ namespace Go_Game_lorleveque_WinForm.Game
         public bool PlayersLoaded
         {
             get { return playersLoaded; }
+        }
+        public bool GotBot
+        {
+            get { return bot != null; }
         }
 
         public Controller(GoGame goGame, UserSettings userSettings, CaseDico caseDico)
@@ -105,51 +128,91 @@ namespace Go_Game_lorleveque_WinForm.Game
         }
         public Player GetActualPlayer()
         {
-            return playingNow ? player2 : player1;
+            return playingNow ? playerBlack : GotBot ? bot : playerWhite;
         }
         public Player GetOtherPlayer()
         {
-            return playingNow ? player1 : player2;
+            return playingNow ? GotBot ? bot : playerWhite : playerBlack;
+        }
+        public void LoadOnePlayer(string playerName)
+        {
+            playersLoaded = true;
+            playerBlack = new Player(playerName, "Noir", this);
         }
         public void LoadTwoPlayers(string namePlayer1, string namePlayer2)
         {
             playersLoaded = true;
-            player1 = new Player(namePlayer1, "Blanc", this);
-            player2 = new Player(namePlayer2, "Noir", this);
+            playerWhite = new Player(namePlayer1, "Blanc", this);
+            playerBlack = new Player(namePlayer2, "Noir", this);
+        }
+        public void LoadBot()
+        {
+            bot = new Bot("Ordinateur", "Blanc", this);
+            UpdateLabelName("Ordinateur", 1);
         }
         public void ResetGoban()
         {
             playersLoaded = false; // when we reset, the players are not loaded
             goban.ResetGoban();
+            goban.initGoban();
         }
 
+        /// <summary>
+        /// Switch the timer (one starts, the other stops)
+        /// </summary>
         public void SwitchTimerPlayer()
         {
             if (playingNow)
             {
-                player2.pauseTimer();
-                player1.resumeTimer();
+                playerBlack.PauseTimer();
+                if (!GotBot)
+                {
+                    playerWhite.ResumeTimer();
+                }
+                else
+                {
+                    bot.ResumeTimer();
+                }
             }
             else
             {
-                player1.pauseTimer();
-                player2.resumeTimer();
+                playerBlack.ResumeTimer();
+                if (!GotBot)
+                {
+                    playerWhite.PauseTimer();
+                }
+                else
+                {
+                    bot.ResumeTimer();
+                }
             }
         }
         public void StopTimers()
         {
-            player1.pauseTimer();
-            player2.pauseTimer();
+            if (gameStarted)
+            {
+                if (playerWhite != null)
+                {
+                    playerWhite.StopTimer();
+                }
+                playerBlack.StopTimer();
+            }
         }
         public void Pause()
         {
             gamePaused = true;
-            GetActualPlayer().pauseTimer();
+            if (gameStarted)
+            {
+                GetActualPlayer().PauseTimer();
+            }
         }
         public void Resume()
         {
             gamePaused = false;
-            GetActualPlayer().resumeTimer();
+            if (gameStarted)
+            {
+                GetActualPlayer().ResumeTimer();
+            }
         }
 
         public void ResetMultipleCases(List<Vector2D> listCases)
@@ -173,6 +236,14 @@ namespace Go_Game_lorleveque_WinForm.Game
         {
             GetActualPlayer().Score += 1;
             goban.setOneCase(casePlayed, playingNow);
+        }
+        public void SetCaseWithColor(Vector2D casePlayed, string color)
+        {
+            goban.setOneCase(casePlayed, color == "black" ? true : false);
+        }
+        public byte GetCase(Vector2D caseWanted)
+        {
+            return goban.GetOneCase(caseWanted);
         }
         public void CalculateGoban(Vector2D casePlayed)
         {
@@ -214,15 +285,21 @@ namespace Go_Game_lorleveque_WinForm.Game
             gameStarted = hugeJson.gameStarted;
             goban.AllGoban = hugeJson.goban;
 
-            player1 = new Player(hugeJson.playerName1, hugeJson.playerColor1, this);
-            player2 = new Player(hugeJson.playerName2, hugeJson.playerColor2, this);
+            playerWhite = new Player(hugeJson.playerName1, hugeJson.playerColor1, this);
+            playerBlack = new Player(hugeJson.playerName2, hugeJson.playerColor2, this);
             playersLoaded = true;
-            player1.Score = hugeJson.playerScore1;
-            player2.Score = hugeJson.playerScore2;
-            player1.TimerValue = (int)hugeJson.playerTimerValue1;
-            player2.TimerValue = (int)hugeJson.playerTimerValue2;
+            playerWhite.Score = hugeJson.playerScore1;
+            playerBlack.Score = hugeJson.playerScore2;
+            playerWhite.TimerValue = (int)hugeJson.playerTimerValue1;
+            playerBlack.TimerValue = (int)hugeJson.playerTimerValue2;
             gamePaused = hugeJson.gamePaused;
             gameStarted = hugeJson.gameStarted;
+        }
+
+        public string GetPlaysFromBot(List<List<byte>> wholeGoban)
+        {
+            Vector2D result = bot.GetPlays(wholeGoban);
+            return result.X + "." + result.Y;
         }
     }
 }

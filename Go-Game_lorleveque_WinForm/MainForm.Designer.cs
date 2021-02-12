@@ -52,6 +52,7 @@ namespace Go_Game_lorleveque_WinForm
             this.labelPlayer2 = new System.Windows.Forms.Label();
             this.labelPlayer1 = new System.Windows.Forms.Label();
             this.listViewHistory = new System.Windows.Forms.ListView();
+            this.buttonEnd = new System.Windows.Forms.Button();
             this.panelUsers.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPlaynowBlack)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPlaynowWhite)).BeginInit();
@@ -89,7 +90,7 @@ namespace Go_Game_lorleveque_WinForm
             // 
             // buttonCharge
             // 
-            this.buttonCharge.Location = new System.Drawing.Point(611, 808);
+            this.buttonCharge.Location = new System.Drawing.Point(538, 808);
             this.buttonCharge.Name = "buttonCharge";
             this.buttonCharge.Size = new System.Drawing.Size(100, 35);
             this.buttonCharge.TabIndex = 3;
@@ -101,7 +102,7 @@ namespace Go_Game_lorleveque_WinForm
             // 
             this.buttonSave.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonSave.Enabled = false;
-            this.buttonSave.Location = new System.Drawing.Point(505, 808);
+            this.buttonSave.Location = new System.Drawing.Point(432, 808);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(100, 35);
             this.buttonSave.TabIndex = 4;
@@ -136,7 +137,7 @@ namespace Go_Game_lorleveque_WinForm
             this.panelUsers.Controls.Add(this.labelPlayWhites);
             this.panelUsers.Controls.Add(this.labelPlayer2);
             this.panelUsers.Controls.Add(this.labelPlayer1);
-            this.panelUsers.Location = new System.Drawing.Point(13, 36);
+            this.panelUsers.Location = new System.Drawing.Point(13, 12);
             this.panelUsers.Name = "panelUsers";
             this.panelUsers.Size = new System.Drawing.Size(269, 147);
             this.panelUsers.TabIndex = 7;
@@ -287,19 +288,31 @@ namespace Go_Game_lorleveque_WinForm
             // listViewHistory
             // 
             this.listViewHistory.HideSelection = false;
-            this.listViewHistory.Location = new System.Drawing.Point(12, 189);
+            this.listViewHistory.Location = new System.Drawing.Point(12, 165);
             this.listViewHistory.MultiSelect = false;
             this.listViewHistory.Name = "listViewHistory";
-            this.listViewHistory.Size = new System.Drawing.Size(270, 654);
+            this.listViewHistory.Size = new System.Drawing.Size(270, 678);
             this.listViewHistory.TabIndex = 8;
             this.listViewHistory.UseCompatibleStateImageBehavior = false;
             this.listViewHistory.View = System.Windows.Forms.View.List;
+            // 
+            // buttonEnd
+            // 
+            this.buttonEnd.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonEnd.Location = new System.Drawing.Point(654, 808);
+            this.buttonEnd.Name = "buttonEnd";
+            this.buttonEnd.Size = new System.Drawing.Size(100, 35);
+            this.buttonEnd.TabIndex = 9;
+            this.buttonEnd.Text = "Terminer";
+            this.buttonEnd.UseVisualStyleBackColor = true;
+            this.buttonEnd.Click += new System.EventHandler(this.buttonEnd_Click);
             // 
             // GoGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1084, 861);
+            this.Controls.Add(this.buttonEnd);
             this.Controls.Add(this.listViewHistory);
             this.Controls.Add(this.panelUsers);
             this.Controls.Add(this.buttonSettings);
@@ -347,6 +360,7 @@ namespace Go_Game_lorleveque_WinForm
         private System.Windows.Forms.Label labelScore1;
         private System.Windows.Forms.PictureBox pictureBoxPlaynowBlack;
         private System.Windows.Forms.PictureBox pictureBoxPlaynowWhite;
+        private System.Windows.Forms.Button buttonEnd;
     }
 }
 

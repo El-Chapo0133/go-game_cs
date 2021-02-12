@@ -30,7 +30,7 @@ namespace Go_Game_lorleveque_WinForm.GameSettings
         public UserSettings()
         {
             somethingChanged = false;
-            gobanSize = 13;
+            gobanSize = 6;
             maxTimeForPlayer = 60 * 20; // 10min (60s * 10)
         }
 

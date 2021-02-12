@@ -27,6 +27,7 @@ namespace Go_Game_lorleveque_WinForm.Game
 
         public void initGoban()
         {
+            goban = new List<List<byte>>();
             for (int index_x = 0; index_x < userSettings.GobanSize; index_x++)
             {
                 goban.Add(new List<byte>());
@@ -38,9 +39,9 @@ namespace Go_Game_lorleveque_WinForm.Game
         }
         public void ResetGoban()
         {
-            for (int indexX = 0; indexX < userSettings.GobanSize; indexX++)
+            for (int indexX = 0; indexX < goban.Count; indexX++)
             {
-                for (int indexY = 0; indexY < userSettings.GobanSize; indexY++)
+                for (int indexY = 0; indexY < goban[indexX].Count; indexY++)
                 {
                     goban[indexX][indexY] = 0;
                 }
@@ -56,6 +57,10 @@ namespace Go_Game_lorleveque_WinForm.Game
             {
                 goban[caseGoban.X][caseGoban.Y] = 2;
             }
+        }
+        public byte GetOneCase(Vector2D caseGoban)
+        {
+            return goban[caseGoban.X][caseGoban.Y];
         }
         public void resetMultipleCases(List<Vector2D> casesGoban)
         {

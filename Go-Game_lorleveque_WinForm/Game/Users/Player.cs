@@ -5,21 +5,19 @@
 * *****************************************************/
 
 
-//using System.Timers;
-using System;
 using System.Windows.Forms;
 
 namespace Go_Game_lorleveque_WinForm.Game.Users
 {
     class Player
     {
-        private Controller gameController;
+        protected Controller gameController;
 
-        private string name, color;
-        private Timer timer;
-        private ushort score;
-        private ushort intervalTimer = 1000;
-        private int timerValue;
+        protected string name, color;
+        protected Timer timer;
+        protected ushort score;
+        protected ushort intervalTimer = 1000;
+        protected int timerValue;
 
         /// <summary>
         /// Getter for the name of the player
@@ -61,12 +59,13 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
             }
         }
 
+        public Player() { }
         public Player(string name, string color, Controller controller)
         {
             gameController = controller;
             this.name = name;
             this.color = color;
-            initTimer();
+            InitTimer();
             score = 0;
             gameController.UpdateLabelName(name, color == "Noir" ? 2 : 1);
         }
@@ -75,7 +74,7 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
         /// <summary>
         /// Initialize a timer
         /// </summary>
-        private void initTimer()
+        protected void InitTimer()
         {
             timer = new Timer();
             timer.Interval = intervalTimer;
@@ -93,30 +92,39 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
         /// <summary>
         /// Start the timer
         /// </summary>
-        public void startTimer()
+        public void StartTimer()
         {
             timer.Start();
         }
+
         /// <summary>
         /// Pause the timer
         /// </summary>
-        public void pauseTimer()
+        public void PauseTimer()
         {
             timer.Stop();
+        }
+
+        /// <summary>
+        /// Stop definitly the timer
+        /// </summary>
+        public void StopTimer()
+        {
+            timer.Dispose();
         }
         /// <summary>
         /// Resume the timer
         /// </summary>
-        public void resumeTimer()
+        public void ResumeTimer()
         {
             timer.Start();
         }
         /// <summary>
         /// Reset the timer
         /// </summary>
-        public void resetTimer()
+        public void ResetTimer()
         {
-            initTimer();
+            InitTimer();
         }
     }
 }

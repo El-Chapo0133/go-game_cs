@@ -9,7 +9,8 @@ namespace Go_Game_lorleveque_WinForm.GameSettings
 {
     class GeneralSettings
     {
-        private int maxCase, minCase, komi;
+        private int maxCase, minCase;
+        private double komi;
 
         public int MaxCase
         {
@@ -19,7 +20,7 @@ namespace Go_Game_lorleveque_WinForm.GameSettings
         {
             get { return minCase; }
         }
-        public int Komi
+        public double Komi
         {
             get { return komi; }
         }
@@ -28,7 +29,7 @@ namespace Go_Game_lorleveque_WinForm.GameSettings
         {
             maxCase = 38;
             minCase = 6;
-            komi = 7;
+            komi = 7.5;
         }
     }
 }
