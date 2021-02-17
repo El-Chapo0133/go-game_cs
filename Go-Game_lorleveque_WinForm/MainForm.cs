@@ -90,24 +90,24 @@ namespace Go_Game_lorleveque_WinForm
 
 
             // ONLY FOR THE ML CSV DATA
-            //string filename = "C:\\Temp\\data_ml.csv";
+            string filename = "C:\\Temp\\data_ml.csv";
 
-            //string textToAppend = "";
-            //for (int indexX = 0; indexX < userSettings.GobanSize; indexX++)
-            //{
-            //    for (int indexY = 0; indexY < userSettings.GobanSize; indexY++)
-            //    {
-            //        if (gameController.GetCase(new Vector2D(indexX, indexY)) == 0)
-            //        {
-            //            textToAppend += "0;";
-            //            continue;
-            //        }
-            //        textToAppend += (gameController.WhoIsPlayingBool() ? gameController.GetCase(new Vector2D(indexX, indexY)) == 1 ? "1" : "-1" : gameController.GetCase(new Vector2D(indexX, indexY)) == 2 ? "1" : "-1") + ";";
-            //    }
+            string textToAppend = "";
+            for (int indexX = 0; indexX < userSettings.GobanSize; indexX++)
+            {
+                for (int indexY = 0; indexY < userSettings.GobanSize; indexY++)
+                {
+                    if (gameController.GetCase(new Vector2D(indexX, indexY)) == 0)
+                    {
+                        textToAppend += "0;";
+                        continue;
+                    }
+                    textToAppend += (gameController.WhoIsPlayingBool() ? gameController.GetCase(new Vector2D(indexX, indexY)) == 1 ? "1" : "-1" : gameController.GetCase(new Vector2D(indexX, indexY)) == 2 ? "1" : "-1") + ";";
+                }
 
-            //}
-            //textToAppend += casePos.X + ";" + casePos.Y + "\n";
-            //System.IO.File.AppendAllText(filename, textToAppend);
+            }
+            textToAppend += casePos.X + ";" + casePos.Y + "\n";
+            System.IO.File.AppendAllText(filename, textToAppend);
 
 
 
