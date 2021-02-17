@@ -99,15 +99,27 @@ namespace Go_Game_lorleveque_WinForm
                 {
                     if (gameController.GetCase(new Vector2D(indexX, indexY)) == 0)
                     {
-                        textToAppend += "0;";
+                        textToAppend += "0,";
                         continue;
                     }
-                    textToAppend += (gameController.WhoIsPlayingBool() ? gameController.GetCase(new Vector2D(indexX, indexY)) == 1 ? "1" : "-1" : gameController.GetCase(new Vector2D(indexX, indexY)) == 2 ? "1" : "-1") + ";";
+                    textToAppend += (gameController.WhoIsPlayingBool() ? gameController.GetCase(new Vector2D(indexX, indexY)) == 1 ? "1" : "-1" : gameController.GetCase(new Vector2D(indexX, indexY)) == 2 ? "1" : "-1") + ",";
                 }
-
             }
-            textToAppend += casePos.X + ";" + casePos.Y + "\n";
-            System.IO.File.AppendAllText(filename, textToAppend);
+            for (int indexX = 0; indexX < userSettings.GobanSize; indexX++)
+            {
+                for (int indexY = 0; indexY < userSettings.GobanSize; indexY++)
+                {
+                    if (indexX == casePos.X && indexY == casePos.Y)
+                    {
+                        textToAppend += "1,";
+                    }
+                    else
+                    {
+                        textToAppend += "0,";
+                    }
+                }
+            }
+            System.IO.File.AppendAllText(filename, shift(textToAppend) + "\n");
 
 
 
@@ -681,6 +693,10 @@ namespace Go_Game_lorleveque_WinForm
                 }
             }
         }
-
+        private string shift(string input)
+        {
+            int inputLength = input.Length;
+            return input.Substring(0, inputLength - 1);
+        }
     }
 }
