@@ -45,16 +45,16 @@ namespace Go_Game_lorleveque_WinForm.Utils
             );
         }
 
-        public void call()
+        public void Call()
         {
             response = client.GetAsync("").Result;
         }
-        public void callWithGetParams(string param)
+        public void CallWithGetParams(string param)
         {
             response = client.GetAsync(param).Result;
         }
 
-        public ApiBotResult getResultBot()
+        public ApiBotResult GetResultBot()
         {
             if (response.IsSuccessStatusCode)
             {

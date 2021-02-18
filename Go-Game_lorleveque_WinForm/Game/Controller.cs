@@ -26,6 +26,7 @@ namespace Go_Game_lorleveque_WinForm.Game
         private Calculator calculator;
         private Player playerWhite, playerBlack; // playerWhite plays white, playerBlack plays black
         private Bot bot;
+        private Bot secondBot; // second bot for the machine learning
         private Goban goban;
         private GobanCalculator gobanCalculator;
         private CaseDico caseDictionnary;
@@ -105,8 +106,20 @@ namespace Go_Game_lorleveque_WinForm.Game
         public void Played()
         {
             SwitchTimerPlayer(); // pause the timer of the player who played, and start the timer of the other player
+            // comment this for the machine learning training
             playingNow = playingNow ? false : true; // true means black and false means white
             round += 1;
+
+            //if (round == 19 * 16)
+            //{
+            //    mainForm.resetGoban();
+
+            //    //ApiCall api = new ApiCall("http://127.0.0.1:8080/fit");
+            //    //api.Call(); // will fit the ml model
+
+            //    // throw new Exception("End of the game");
+            //}
+            // comment this for the machine learning training
         }
 
         public string WhoIsPlaying()
@@ -149,6 +162,11 @@ namespace Go_Game_lorleveque_WinForm.Game
         {
             bot = new Bot("Ordinateur", "Blanc", this);
             UpdateLabelName("Ordinateur", 1);
+        }
+        public void LoadSecondBot()
+        {
+            secondBot = new Bot("Ordinateur", "Blanc", this);
+            UpdateLabelName("Ordinateur", 2);
         }
         public void ResetGoban()
         {
@@ -228,13 +246,14 @@ namespace Go_Game_lorleveque_WinForm.Game
 
             GetActualPlayer().Score = GetActualPlayer().Score + score;
             GetOtherPlayer().Score = GetOtherPlayer().Score - score;
+            // comment this for the machine learning training
 
 
             goban.resetMultipleCases(listCases);
         }
         public void SetCase(Vector2D casePlayed)
         {
-            GetActualPlayer().Score += 1;
+            GetActualPlayer().Score += 1; // comment this for the machine learning training
             goban.setOneCase(casePlayed, playingNow);
         }
         public void SetCaseWithColor(Vector2D casePlayed, string color)

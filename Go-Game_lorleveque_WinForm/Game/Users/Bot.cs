@@ -52,18 +52,24 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
             {
                 for (int indexY = 0; indexY < goban[indexX].Count; indexY++)
                 {
-                    if (gameController.GetCase(new Vector2D(indexX, indexY)) == 0)
+                    if (goban[indexX][indexY] == 0)
                     {
                         param += "&" + indexX + "." + indexY + "=0";
-                        continue;
                     }
-                    param += "&" + indexX + "." + indexY + "=" + (gameController.WhoIsPlayingBool() ? gameController.GetCase(new Vector2D(indexX, indexY)) == 1 ? "1" : "-1" : gameController.GetCase(new Vector2D(indexX, indexY)) == 2 ? "1" : "-1");
+                    else if (goban[indexX][indexY] == 3)
+                    {
+                        param += "&" + indexX + "." + indexY + "=-1";
+                    }
+                    else
+                    {
+                        param += "&" + indexX + "." + indexY + "=" + (gameController.WhoIsPlayingBool() ? gameController.GetCase(new Vector2D(indexX, indexY)) == 1 ? "1" : "-1" : gameController.GetCase(new Vector2D(indexX, indexY)) == 2 ? "1" : "-1");
+                    }
                 }
             }
 
-            api.callWithGetParams("?" + shift(param));
+            api.CallWithGetParams("?" + shift(param));
 
-            var result = api.getResultBot();
+            ApiBotResult result = api.GetResultBot();
             if (result == null)
             {
                 throw new System.Exception("Result of the api is null");

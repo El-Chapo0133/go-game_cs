@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Go_Game_lorleveque_WinForm
@@ -137,7 +138,9 @@ namespace Go_Game_lorleveque_WinForm
             casesDictionnary.useCase(casePos, gameController.Round);
             ((PictureBox)sender).Image = Image.FromFile(imageAjuster.getImageGobanFromPos(casePos.X, casePos.Y, userSettings.GobanSize) + "_" + gameController.WhoIsPlayingForImage() + ".png");
 
-            int last_score = gameController.GetActualPlayer().Score;
+            Thread.Sleep(100);
+
+            int last_score = gameController.GetActualPlayer().Score; // comment this for the machine learning training
             gameController.SetCase(casePos);
             gameController.CalculateGoban(casePos);
 
@@ -153,12 +156,12 @@ namespace Go_Game_lorleveque_WinForm
             }
 
 
-            listViewHistory.Items.Add(gameController.Round + ". Le joueur " + gameController.WhoIsPlaying() + " a joué " + casePos.X + ":" + casePos.Y + " et a gagné: " + (gameController.GetActualPlayer().Score- last_score) + "points");
+            listViewHistory.Items.Add(gameController.Round + ". Le joueur " + gameController.WhoIsPlaying() + " a joué " + casePos.X + ":" + casePos.Y + " et a gagné: " + (gameController.GetActualPlayer().Score - last_score) + "points");
             listViewHistory.EnsureVisible(listViewHistory.Items.Count - 1); // set the index to the last one, it always display the last move
+            // comment this for the machine learning training
 
             casesDictionnary.updateDicoFromRound(gameController.Round);
             gameController.Played();
-
 
             checkIfBotAndPlay();
         }
@@ -166,7 +169,7 @@ namespace Go_Game_lorleveque_WinForm
         /// <summary>
         /// Reset the game (listViewHistory, gameController, players, labels, buttons. dico and goban)
         /// </summary>
-        private void resetGoban()
+        public void resetGoban()
         {
             Calculator calculator = new Calculator();
             Panel panel = searchGobanPanelAndRemoveAllChilds();
@@ -188,6 +191,7 @@ namespace Go_Game_lorleveque_WinForm
             labelTimer2.Text = maxTimeSpan;
             System.Diagnostics.Debug.WriteLine("|- Labels réinitialisés");
             buttonStart.Enabled = true;
+            buttonSave.Enabled = false;
             buttonPause.Text = "Pause";
             System.Diagnostics.Debug.WriteLine("|- Boutons réinitialisés");
             pictureBoxPlaynowBlack.Visible = true;
@@ -317,7 +321,9 @@ namespace Go_Game_lorleveque_WinForm
                 if (player2IsABot)
                 {
                     gameController.LoadBot();
+                    //gameController.LoadSecondBot();
                     gameController.LoadOnePlayer(playersName[1]);
+                    // comment this for the machine learning train
                 }
                 else
                 {
@@ -327,7 +333,7 @@ namespace Go_Game_lorleveque_WinForm
 
             buttonSave.Enabled = true;
             gameController.GameStarted = true;
-            gameController.GetActualPlayer().StartTimer();
+            gameController.GetActualPlayer().StartTimer(); // comment this for the machine learning train
             ((Button)sender).Enabled = false;
         }
 
@@ -340,7 +346,6 @@ namespace Go_Game_lorleveque_WinForm
         {
             if (MessageBox.Show("Voulez vous vraiment reset la partie ?", "Reset la partie", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                buttonSave.Enabled = false;
                 resetGoban();
             }
         }
@@ -581,7 +586,7 @@ namespace Go_Game_lorleveque_WinForm
 
         private void checkIfBotAndPlay()
         {
-            if (gameController.GotBot && !gameController.PlayingNow)
+            if (gameController.GotBot && !gameController.PlayingNow) // comment this for the machine learning train
             {
                 List<List<byte>> gobanClone = new List<List<byte>>();
                 for (int indexX = 0; indexX < userSettings.GobanSize; indexX++)

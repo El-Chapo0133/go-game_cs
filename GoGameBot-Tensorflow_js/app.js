@@ -23,6 +23,9 @@ app.get('/', (request, response) => {
     response.setHeader('Content-Type', 'application/json');
     response.end(ml.predict(arrayParams));
 });
+app.get('/fit', (request, response) => {
+    ml.fit();
+});
 
 console.log("Code me daddy!");
 

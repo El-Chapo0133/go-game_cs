@@ -1,13 +1,14 @@
-﻿
-
-
-
-using Go_Game_lorleveque_WinForm.JsonGenerator;
-/**
+﻿/**
 * Author : Loris Levêque
 * Date : 04.02.2021
 * Description : Get all the settings that the users can change
 * *****************************************************/
+
+
+
+
+using Go_Game_lorleveque_WinForm.JsonGenerator;
+
 namespace Go_Game_lorleveque_WinForm.GameSettings
 {
     class UserSettings
