@@ -26,6 +26,7 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
         {
             get { return name; }
         }
+
         /// <summary>
         /// Getter for the color of the player
         /// </summary>
@@ -33,6 +34,7 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
         {
             get { return color; }
         }
+
         /// <summary>
         /// Get and Set the score
         /// When the score is setted, update the label in the view
@@ -45,6 +47,7 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
                 gameController.UpdateLabelScore(score, color == "Noir" ? 2 : 1);
             }
         }
+
         /// <summary>
         /// Get or Set the timerValue
         /// When timervalue is setted, update the label in the view
@@ -59,7 +62,16 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Player() { }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">Name of the player</param>
+        /// <param name="color">The color the player is</param>
+        /// <param name="controller">The gameController</param>
         public Player(string name, string color, Controller controller)
         {
             gameController = controller;
@@ -70,7 +82,6 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
             gameController.UpdateLabelName(name, color == "Noir" ? 2 : 1);
         }
 
-
         /// <summary>
         /// Initialize a timer
         /// </summary>
@@ -80,6 +91,7 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
             timer.Interval = intervalTimer;
             timer.Tick += Timer_Tick;
         }
+
         /// <summary>
         /// Event for the tick, will increment the TimerValue and update the label
         /// </summary>
@@ -112,6 +124,7 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
         {
             timer.Dispose();
         }
+
         /// <summary>
         /// Resume the timer
         /// </summary>
@@ -119,12 +132,26 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
         {
             timer.Start();
         }
+
         /// <summary>
         /// Reset the timer
         /// </summary>
         public void ResetTimer()
         {
             InitTimer();
+        }
+
+        /// <summary>
+        /// Dispose the player
+        /// </summary>
+        public void Dispose()
+        {
+            name = "";
+            color = "";
+            timer.Stop();
+            timer.Dispose();
+            timerValue = 0;
+            score = 0;
         }
     }
 }

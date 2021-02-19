@@ -233,6 +233,11 @@ namespace Go_Game_lorleveque_WinForm.Game
             }
         }
 
+        public void DisposePlayers()
+        {
+            playerBlack.Dispose();
+            playerWhite.Dispose();
+        }
         public void ResetMultipleCases(List<Vector2D> listCases)
         {
             ImageAjuster imageAjuster = new ImageAjuster();

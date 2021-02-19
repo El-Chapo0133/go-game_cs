@@ -182,6 +182,7 @@ namespace Go_Game_lorleveque_WinForm
             gameController.PlayingNow = true;
             System.Diagnostics.Debug.WriteLine("|- controlleur réinitialisés");
             gameController.StopTimers();
+            gameController.DisposePlayers();
             gameController.LoadTwoPlayers("Blanc", "Noir");
             System.Diagnostics.Debug.WriteLine("|- Joueurs réinitialisés");
             labelScoreValue1.Text = "0";
