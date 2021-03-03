@@ -22,7 +22,7 @@ namespace Go_Game_lorleveque_WinForm.Game.Users
         public Bot() { }
 
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
         /// <param name="name"></param>
         /// <param name="color"></param>

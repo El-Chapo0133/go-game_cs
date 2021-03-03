@@ -138,7 +138,7 @@ namespace Go_Game_lorleveque_WinForm
             casesDictionnary.useCase(casePos, gameController.Round);
             ((PictureBox)sender).Image = Image.FromFile(imageAjuster.getImageGobanFromPos(casePos.X, casePos.Y, userSettings.GobanSize) + "_" + gameController.WhoIsPlayingForImage() + ".png");
 
-            Thread.Sleep(100);
+            // Thread.Sleep(100);
 
             int last_score = gameController.GetActualPlayer().Score; // comment this for the machine learning training
             gameController.SetCase(casePos);
